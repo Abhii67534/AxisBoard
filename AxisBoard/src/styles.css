@@ -1,0 +1,4 @@
+/* styles.css or styles.scss */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
