@@ -2,3 +2,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.kanban {
+  background: linear-gradient(to right, #2b2d42, #4C51BF); /* Dark blue to a slightly lighter shade */
+  height: 600px;
+  width: 100%; 
+  opacity: 0.9; /* Increased opacity for better visibility */
+  padding-top: 10px;
+  border-radius: 5%;
+  
+
+}
