@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 

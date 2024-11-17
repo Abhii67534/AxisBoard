@@ -1,7 +1,6 @@
 <nav class="bg-gradient-to-r from-indigo-800 via-blue-800 to-purple-800 text-white p-4">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-center items-center h-16">
-      <!-- Logo -->
       <div class="flex-shrink-0">
         <a routerLink="/" class="text-4xl font-poppins font-bold">AXIS BOARD</a>
       </div>
@@ -9,43 +8,142 @@
   </div>
 </nav>
 
-
 <!-- Kanban Board Section -->
-<!-- <div class="w-full">
-  <p class="bg-gradient-to-r from-blue-700 via-purple-700 to-purple-800 opacity-40 text-center py-2 text-white">Board name</p>
-</div> -->
 
-<!-- Kanban Columns -->
-<div class="flex flex-wrap justify-between py-10 gap-6 px-0">
+<!-- Loading Spinner or Message -->
+<div *ngIf="isLoading" class="flex justify-center items-center h-full w-full absolute top-0 left-0 bg-gray-900 bg-opacity-50 z-50">
+  <div class="spinner-border animate-spin border-t-4 border-blue-500 border-solid w-16 h-16 rounded-full"></div> <!-- A simple spinner -->
+</div>
+
+<!-- Kanban Board -->
+<!-- Kanban Board -->
+<div *ngIf="!isLoading" class="flex flex-wrap justify-between py-10 gap-6 px-0" cdkDropListGroup>
+
+  <!-- Backlog -->
   <div class="kanban flex flex-col items-center bg-blue-700 h-[600px] w-full sm:w-[48%] md:w-[23%] lg:w-[23%] xl:w-[23%] opacity-75">
     <h2 class="font-bold text-2xl text-white">BACKLOG</h2>
-    <button (click)="handleClick()" class="bg-white h-[50px] w-[150px] mt-4 shadow-lg rounded-lg flex justify-center items-center">Add a new <span class="text-xl ml-2 flex justify-center items-center">+</span></button>
+    <div
+      cdkDropList
+      #backlogList="cdkDropList"
+      [cdkDropListData]="todo"
+      [cdkDropListConnectedTo]="['doingList', 'reviewList', 'doneList']"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <!-- Placeholder for empty Backlog -->
+      <div *ngIf="todo.length === 0" class="h-[50px] w-[300px] bg-gray-300 mt-5 rounded-lg flex justify-center items-center text-gray-500">
+        No cards in backlog
+      </div>
 
-    <div class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-center items-center shadow-lg">Finish assignment</div>
-    <div class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-center items-center shadow-lg">Learn Firebase</div>
-    <div class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-center items-center shadow-lg">Cook food</div>
-
-    <div *ngFor="let div of divs; let i = index" class="h-[50px] w-[100px] bg-white mt-5 rounded-lg flex justify-center  items-center shadow-lg">
-      <p>Div {{ i + 1 }}: {{ div }}</p>
+      <!-- Render cards as usual -->
+      <div
+        class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-between items-center shadow-lg hover:shadow-xl transition-all ease-in-out duration-300 transform"
+        cdkDrag
+        *ngFor="let item of todo"
+      >
+        <span class="flex-1">{{ item }}</span>
+        <button (click)="deleteCard('todo', item)" class="ml-2 text-red-500 hover:text-red-700 transition-all">
+          Delete
+        </button>
+      </div>
     </div>
-    
+    <button (click)="addCard('todo')" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors duration-300">
+      Add Card
+    </button>
   </div>
-  
+
+  <!-- Doing -->
   <div class="kanban flex flex-col items-center bg-blue-700 h-[600px] w-full sm:w-[48%] md:w-[23%] lg:w-[23%] xl:w-[23%] opacity-75">
     <h2 class="font-bold text-2xl text-white">DOING</h2>
+    <div
+      cdkDropList
+      #doingList="cdkDropList"
+      [cdkDropListData]="doing"
+      [cdkDropListConnectedTo]="['backlogList', 'reviewList', 'doneList']"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <!-- Placeholder for empty Doing -->
+      <div *ngIf="doing.length === 0" class="h-[50px] w-[300px] bg-gray-300 mt-5 rounded-lg flex justify-center items-center text-gray-500">
+        No cards in progress
+      </div>
 
-    
+      <!-- Render cards as usual -->
+      <div
+        class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-between items-center shadow-lg hover:shadow-xl transition-all ease-in-out duration-300 transform"
+        cdkDrag
+        *ngFor="let item of doing"
+      >
+        <span class="flex-1">{{ item }}</span>
+        <button (click)="deleteCard('doing', item)" class="ml-2 text-red-500 hover:text-red-700 transition-all">
+          Delete
+        </button>
+      </div>
+    </div>
+    <button (click)="addCard('doing')" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors duration-300">
+      Add Card
+    </button>
   </div>
 
-
+  <!-- Review -->
   <div class="kanban flex flex-col items-center bg-blue-700 h-[600px] w-full sm:w-[48%] md:w-[23%] lg:w-[23%] xl:w-[23%] opacity-75">
     <h2 class="font-bold text-2xl text-white">REVIEW</h2>
- 
+    <div
+      cdkDropList
+      #reviewList="cdkDropList"
+      [cdkDropListData]="review"
+      [cdkDropListConnectedTo]="['backlogList', 'doingList', 'doneList']"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <!-- Placeholder for empty Review -->
+      <div *ngIf="review.length === 0" class="h-[50px] w-[300px] bg-gray-300 mt-5 rounded-lg flex justify-center items-center text-gray-500">
+        No cards for review
+      </div>
+
+      <!-- Render cards as usual -->
+      <div
+        class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-between items-center shadow-lg hover:shadow-xl transition-all ease-in-out duration-300 transform"
+        cdkDrag
+        *ngFor="let item of review"
+      >
+        <span class="flex-1">{{ item }}</span>
+        <button (click)="deleteCard('review', item)" class="ml-2 text-red-500 hover:text-red-700 transition-all">
+          Delete
+        </button>
+      </div>
+    </div>
+    <button (click)="addCard('review')" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors duration-300">
+      Add Card
+    </button>
   </div>
 
-
+  <!-- Done -->
   <div class="kanban flex flex-col items-center bg-blue-700 h-[600px] w-full sm:w-[48%] md:w-[23%] lg:w-[23%] xl:w-[23%] opacity-75">
     <h2 class="font-bold text-2xl text-white">DONE</h2>
- 
-    
+    <div
+      cdkDropList
+      #doneList="cdkDropList"
+      [cdkDropListData]="done"
+      [cdkDropListConnectedTo]="['backlogList', 'doingList', 'reviewList']"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <!-- Placeholder for empty Done -->
+      <div *ngIf="done.length === 0" class="h-[50px] w-[300px] bg-gray-300 mt-5 rounded-lg flex justify-center items-center text-gray-500">
+        No completed cards
+      </div>
+
+      <!-- Render cards as usual -->
+      <div
+        class="h-[50px] w-[300px] bg-white mt-5 rounded-lg flex justify-between items-center shadow-lg hover:shadow-xl transition-all ease-in-out duration-300 transform"
+        cdkDrag
+        *ngFor="let item of done"
+      >
+        <span class="flex-1">{{ item }}</span>
+        <button (click)="deleteCard('done', item)" class="ml-2 text-red-500 hover:text-red-700 transition-all">
+          Delete
+        </button>
+      </div>
+    </div>
+    <button (click)="addCard('done')" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors duration-300">
+      Add Card
+    </button>
   </div>
+</div>

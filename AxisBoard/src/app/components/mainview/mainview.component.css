@@ -1,0 +1,19 @@
+.cdk-drag-preview {
+    position: absolute !important;
+    pointer-events: none;
+    z-index: 1000;
+    transition: none !important;
+}
+  
+.cdk-drag-placeholder {
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: none;
+}
+  
+.cdk-drag {
+    transition: transform 0.2s ease-out !important;
+}
+  
+.cdk-drag.cdk-drag-animating {
+    transform: scale(1.05);
+}
