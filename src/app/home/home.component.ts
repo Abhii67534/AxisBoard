@@ -1,21 +1,30 @@
 import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { KanbanService } from '../services/kanban.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {
-  // Task columns
-  backlog: string[] = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
-  doing: string[] = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
-  review: string[] = ['Review PR', 'Test feature'];
-  done: string[] = ['Complete meeting', 'Submit report'];
+export class HomeComponent implements OnInit{
+    // Task columns
+    backlog: string[] = [];
+    doing: string[] = [];
+    review: string[] = [];
+    done: string[] = [];
+
+constructor(private kanban:KanbanService){}
+  ngOnInit(): void {
+    this.showTasks();
+  }
+
+
 
   // State for drag-and-drop
   isDragging = false;
@@ -41,10 +50,15 @@ export class HomeComponent {
     }
 
     // Debugging log to monitor changes in columns
-    console.log('Backlog:', this.backlog);
-    console.log('Doing:', this.doing);
-    console.log('Review:', this.review);
-    console.log('Done:', this.done);
+    // console.log('Backlog:', this.backlog);
+    // console.log('Doing:', this.doing);
+    // console.log('Review:', this.review);
+    // console.log('Done:', this.done);
+    this.kanban.updateTasks('backlog', this.backlog);
+    this.kanban.updateTasks('doing', this.doing);
+    this.kanban.updateTasks('review', this.review);
+    this.kanban.updateTasks('done', this.done);
+    
   }
 
   /**
@@ -67,9 +81,23 @@ export class HomeComponent {
   addTask() {
     if (this.newTask.trim()) {
       this[this.selectedColumn].push(this.newTask.trim());
+
+      this.kanban.addTasks(this.selectedColumn,this.newTask.trim());
+
+      console.log(this.selectedColumn , " " , this[this.selectedColumn]);
+
       this.newTask = ''; // Clear input field
     } else {
       alert('Task cannot be empty!');
     }
+
+
+  }
+
+  showTasks(){
+    this.backlog= this.kanban.displayTasks('backlog');
+    this.doing= this.kanban.displayTasks('doing');
+    this.review= this.kanban.displayTasks('review');
+    this.done= this.kanban.displayTasks('done');
   }
 }
