@@ -1,41 +1,141 @@
-<div class="bg-gradient-to-r from-slate-800 via-black to-black opacity-90 p-10 h-screen w-full ">
+<div class="bg-gradient-to-r from-slate-800 via-black to-black opacity-90 p-10 h-screen w-full">
+    <!-- Header -->
     <div class="flex justify-center font-bold text-5xl py-5 text-white">AXIS BOARD</div>
-
-    <div class="flex justify-evenly items-center">
-
-    <!-- BACKLOG -->
-     <div class="w-[400px] h-[400px] bg-neutral-200 rounded-lg">
-        <div class="flex justify-center py-2 bg-rose-400 rounded-t-lg">BACKLOG</div>
-
-        <div class="bg-white m-5 p-5">
-            I have to finish work
-        </div>
-        <div class="bg-white m-5 p-5">
-            I have to finish work
-        </div>
-        <div class="bg-white m-5 p-5">
-            I have to finish work
-        </div>
-        <div class="bg-white m-5 p-5">
-            I have to finish work
-        </div>
-        
-     </div>
-    
-     <!-- DOING-->
-     <div class="w-[400px] h-[400px] bg-neutral-200 rounded-lg">
-        <div class="flex justify-center py-2 bg-amber-400 rounded-t-lg">DOING</div>
-     </div>
-    
-     <!-- REVIEW -->
-     <div class="w-[400px] h-[400px] bg-neutral-200 rounded-lg">
-        <div class="flex justify-center py-2 bg-lime-400 rounded-t-lg">REVIEW</div>
-     </div>
-
-     <div class="w-[400px] h-[400px] bg-neutral-200 rounded-lg">
-        <div class="flex justify-center py-2 bg-blue-400 rounded-t-lg">DONE</div>
-     </div>
+  
+    <!-- Task Creation Form -->
+    <div class="flex justify-center items-center space-x-4 mb-8">
+      <input
+        type="text"
+        [(ngModel)]="newTask"
+        placeholder="Enter a new task"
+        class="w-1/3 px-4 py-2 rounded-md border-2 border-gray-600 focus:outline-none"
+      />
+      <select
+        [(ngModel)]="selectedColumn"
+        class="w-1/4 px-4 py-2 rounded-md border-2 border-gray-600 focus:outline-none"
+      >
+        <option value="backlog">Backlog</option>
+        <option value="doing">Doing</option>
+        <option value="review">Review</option>
+        <option value="done">Done</option>
+      </select>
+      <button
+        (click)="addTask()"
+        class="px-6 py-2 bg-green-500 text-white font-bold rounded-md hover:bg-green-600"
+      >
+        Add Task
+      </button>
     </div>
-    
-</div>
-
+  
+    <!-- Task Board -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" cdkDropListGroup>
+      <!-- BACKLOG -->
+      <div class="w-[400px] h-[700px] bg-gradient-to-r from-slate-800 via-black to-black opacity-90 rounded-lg">
+        <div class="flex justify-center py-2 bg-rose-400 rounded-t-lg">BACKLOG</div>
+        <div
+          class="list-columns"
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="backlog"
+          (cdkDropListDropped)="drop($event)"
+          class="transition-all ease-in-out duration-300"
+        >
+          <div
+            class="bg-white m-5 p-5 rounded-md transform"
+            *ngFor="let td of backlog"
+            cdkDrag
+            [ngClass]="{
+              'transition-none': isDragging,
+              'transition-all ease-in-out duration-300': !isDragging
+            }"
+            (cdkDragStarted)="onDragStarted()"
+            (cdkDragEnded)="onDragEnded()"
+          >
+            {{ td }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- DOING -->
+      <div class="w-[400px] h-[700px] bg-gradient-to-r from-slate-800 via-black to-black opacity-90 rounded-lg">
+        <div class="flex justify-center py-2 bg-amber-400 rounded-t-lg">DOING</div>
+        <div
+          class="list-columns"
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="doing"
+          (cdkDropListDropped)="drop($event)"
+          class="transition-all ease-in-out duration-300"
+        >
+          <div
+            class="bg-white m-5 p-5 rounded-md transform"
+            *ngFor="let td of doing"
+            cdkDrag
+            [ngClass]="{
+              'transition-none': isDragging,
+              'transition-all ease-in-out duration-300': !isDragging
+            }"
+            (cdkDragStarted)="onDragStarted()"
+            (cdkDragEnded)="onDragEnded()"
+          >
+            {{ td }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- REVIEW -->
+      <div class="w-[400px] h-[700px] bg-gradient-to-r from-slate-800 via-black to-black opacity-90 rounded-lg">
+        <div class="flex justify-center py-2 bg-lime-400 rounded-t-lg">REVIEW</div>
+        <div
+          class="list-columns"
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="review"
+          (cdkDropListDropped)="drop($event)"
+          class="transition-all ease-in-out duration-300"
+        >
+          <div
+            class="bg-white m-5 p-5 rounded-md transform"
+            *ngFor="let td of review"
+            cdkDrag
+            [ngClass]="{
+              'transition-none': isDragging,
+              'transition-all ease-in-out duration-300': !isDragging
+            }"
+            (cdkDragStarted)="onDragStarted()"
+            (cdkDragEnded)="onDragEnded()"
+          >
+            {{ td }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- DONE -->
+      <div class="w-[400px] h-[700px] bg-gradient-to-r from-slate-800 via-black to-black opacity-90 rounded-lg">
+        <div class="flex justify-center py-2 bg-blue-400 rounded-t-lg">DONE</div>
+        <div
+          class="list-columns"
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="done"
+          (cdkDropListDropped)="drop($event)"
+          class="transition-all ease-in-out duration-300"
+        >
+          <div
+            class="bg-white m-5 p-5 rounded-md transform"
+            *ngFor="let td of done"
+            cdkDrag
+            [ngClass]="{
+              'transition-none': isDragging,
+              'transition-all ease-in-out duration-300': !isDragging
+            }"
+            (cdkDragStarted)="onDragStarted()"
+            (cdkDragEnded)="onDragEnded()"
+          >
+            {{ td }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
