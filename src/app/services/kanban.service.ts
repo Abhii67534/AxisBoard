@@ -46,24 +46,27 @@ export class KanbanService {
   }
 
   displayTasks(column:string){
-    if(column==='backlog'){
-      const storedBacklog= localStorage.getItem('backlog');
-      return storedBacklog ? JSON.parse(storedBacklog) : [];
-    }
-
-    if(column==='doing'){
-      const storedDoing = localStorage.getItem('doing');
-      return storedDoing ? JSON.parse(storedDoing) : [];
-    }
-
-    if(column=== 'review'){
-      const storedReview = localStorage.getItem('review');
-      return storedReview ? JSON.parse(storedReview) : [];
-    }
-
-    if(column==='done'){
-      const storedDone = localStorage.getItem('done');
-      return storedDone ? JSON.parse(storedDone) : [];
+    if(typeof window !='undefined' && typeof window.localStorage !== 'undefined'){
+      if(column==='backlog'){
+        const storedBacklog= localStorage.getItem('backlog');
+        return storedBacklog ? JSON.parse(storedBacklog) : [];
+      }
+  
+      if(column==='doing'){
+        const storedDoing = localStorage.getItem('doing');
+        return storedDoing ? JSON.parse(storedDoing) : [];
+      }
+  
+      if(column=== 'review'){
+        const storedReview = localStorage.getItem('review');
+        return storedReview ? JSON.parse(storedReview) : [];
+      }
+  
+      if(column==='done'){
+        const storedDone = localStorage.getItem('done');
+        return storedDone ? JSON.parse(storedDone) : [];
+      }
+  
     }
 
 
